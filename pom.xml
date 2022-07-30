@@ -1050,7 +1050,7 @@
         <artifactId>wiremock</artifactId>
         <scope>test</scope>
         <!--  2.27.2 causes WatchHttpTest to fail. -->
-        <version>2.26.3</version>
+        <version>2.27.2</version>
       </dependency>
       <!-- Used for compressing to formats other than zip and gz -->
       <dependency>
