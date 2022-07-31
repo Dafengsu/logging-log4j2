@@ -17,6 +17,7 @@
 package org.apache.logging.log4j.core.appender.rolling;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.junit.CleanUpDirectories;
 import org.apache.logging.log4j.junit.LoggerContextSource;
@@ -24,13 +25,15 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.time.LocalTime;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @LoggerContextSource(value= "log4j-rolling-random-direct-switch-director.xml")
+@CleanUpDirectories("target/rolling-random-direct-switch-director")
 public class RollingRandomAppenderDirectWriteAndSwitchDirectorTest {
 
-    private static final String DIR = "target/rolling-random-direct-switch-director";
+    private final static String DIR = "target/rolling-random-direct-switch-director";
     private final Logger logger;
 
     public RollingRandomAppenderDirectWriteAndSwitchDirectorTest(final LoggerContext context) {
@@ -38,8 +41,9 @@ public class RollingRandomAppenderDirectWriteAndSwitchDirectorTest {
     }
 
     @Test
-    @CleanUpDirectories(DIR)
     public void testAppender() throws Exception {
+        String uuid = UUID.randomUUID().toString();
+        ThreadContext.put("uuid", uuid);
         LocalTime start = LocalTime.now();
         LocalTime end;
         do {
@@ -48,7 +52,7 @@ public class RollingRandomAppenderDirectWriteAndSwitchDirectorTest {
             Thread.sleep(100);
         } while (start.getSecond() == end.getSecond());
 
-        File nextLogFile = new File(String.format("%s/%d/%d.log", DIR, end.getSecond(), end.getSecond()));
+        File nextLogFile = new File(String.format("%s/%s/%d/%d.log", DIR, uuid, end.getSecond(), end.getSecond()));
         assertTrue(nextLogFile.exists(), "nextLogFile not created");
     }
 }

@@ -28,7 +28,7 @@
                 <Pattern>${LOG_PATTERN}</Pattern>
             </PatternLayout>
         </Console>
-        <RollingRandomAccessFile name="RollingFile"  filePattern="${baseDir}/%d{s}/%d{s}.log">
+        <RollingRandomAccessFile name="RollingFile"  filePattern="${baseDir}/${ctx:uuid}/%d{s}/%d{s}.log">
             <PatternLayout header= "${LOG_HEADER}">
                 <Pattern>${LOG_PATTERN}</Pattern>
             </PatternLayout>
