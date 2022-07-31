@@ -27,7 +27,7 @@ import java.time.LocalTime;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@LoggerContextSource(value= "log4j-rolling-random-direct-switch-director.xml")
+@LoggerContextSource(value = "log4j-rolling-random-direct-switch-director.xml", timeout = 10)
 public class RollingRandomAppenderDirectWriteAndSwitchDirectorTest {
 
     private static final String DIR = "target/rolling-random-direct-switch-director";
