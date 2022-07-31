@@ -19,18 +19,23 @@ package org.apache.logging.log4j.core.appender.rolling;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.junit.CleanUpDirectories;
 import org.apache.logging.log4j.junit.LoggerContextSource;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.time.LocalTime;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @LoggerContextSource(value= "log4j-rolling-random-direct-switch-director.xml")
-@CleanUpDirectories("target/rolling-random-direct-switch-director")
 public class RollingRandomAppenderDirectWriteAndSwitchDirectorTest {
 
     private final static String DIR = "target/rolling-random-direct-switch-director";
@@ -54,5 +59,26 @@ public class RollingRandomAppenderDirectWriteAndSwitchDirectorTest {
 
         File nextLogFile = new File(String.format("%s/%s/%d/%d.log", DIR, uuid, end.getSecond(), end.getSecond()));
         assertTrue(nextLogFile.exists(), "nextLogFile not created");
+        String subdir = String.format("%s/%s", DIR, uuid);
+        assertTrue(cleanPath(Paths.get(subdir)), "clean sub director failed");
+    }
+
+    private boolean cleanPath(final Path path) throws IOException {
+        if (Files.exists(path) && Files.isDirectory(path)) {
+            Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
+                    Files.deleteIfExists(file);
+                    return FileVisitResult.CONTINUE;
+                }
+
+                @Override
+                public FileVisitResult postVisitDirectory(final Path dir, final IOException exc) throws IOException {
+                    Files.deleteIfExists(dir);
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+        }
+        return true;
     }
 }
