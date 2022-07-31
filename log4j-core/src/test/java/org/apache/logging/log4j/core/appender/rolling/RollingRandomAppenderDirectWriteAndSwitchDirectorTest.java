@@ -17,28 +17,45 @@
 package org.apache.logging.log4j.core.appender.rolling;
 
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.junit.CleanUpDirectories;
-import org.apache.logging.log4j.junit.LoggerContextSource;
-import org.junit.jupiter.api.Test;
+import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.RuleChain;
 
 import java.io.File;
 import java.time.LocalTime;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.apache.logging.log4j.hamcrest.Descriptors.that;
+import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.hasItemInArray;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
-@LoggerContextSource(value= "log4j-rolling-random-direct-switch-director.xml")
+/**
+ *
+ */
 public class RollingRandomAppenderDirectWriteAndSwitchDirectorTest {
 
-    private static final String DIR = "target/rolling-random-direct-switch-director";
-    private final Logger logger;
+    private static final String CONFIG = "log4j-rolling-random-direct-switch-director.xml";
 
-    public RollingRandomAppenderDirectWriteAndSwitchDirectorTest(final LoggerContext context) {
-        this.logger = context.getLogger(RollingRandomAppenderDirectWriteAndSwitchDirectorTest.class.getName());
+    private static final String DIR = "target/rolling-random-direct-switch-director";
+
+    public static LoggerContextRule loggerContextRule = LoggerContextRule.createShutdownTimeoutLoggerContextRule(CONFIG);
+
+    @Rule
+    public RuleChain chain = loggerContextRule.withCleanFoldersRule(DIR);
+
+    private Logger logger;
+
+    @Before
+    public void setUp() throws Exception {
+        this.logger = loggerContextRule.getLogger(RollingRandomAppenderDirectWriteAndSwitchDirectorTest.class.getName());
     }
 
     @Test
-    @CleanUpDirectories(DIR)
     public void testAppender() throws Exception {
         LocalTime start = LocalTime.now();
         LocalTime end;
@@ -49,6 +66,6 @@ public class RollingRandomAppenderDirectWriteAndSwitchDirectorTest {
         } while (start.getSecond() == end.getSecond());
 
         File nextLogFile = new File(String.format("%s/%d/%d.log", DIR, end.getSecond(), end.getSecond()));
-        assertTrue(nextLogFile.exists(), "nextLogFile not created");
+        assertTrue("nextLogFile not created", nextLogFile.exists());
     }
 }
