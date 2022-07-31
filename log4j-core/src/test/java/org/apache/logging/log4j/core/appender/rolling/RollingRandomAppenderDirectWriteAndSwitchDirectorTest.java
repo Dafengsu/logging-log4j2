@@ -49,6 +49,7 @@ public class RollingRandomAppenderDirectWriteAndSwitchDirectorTest {
     public void testAppender() throws Exception {
         String uuid = UUID.randomUUID().toString();
         ThreadContext.put("uuid", uuid);
+        logger.info("RollingRandomAppenderDirectWriteAndSwitchDirectorTest uuid:" + uuid);
         LocalTime start = LocalTime.now();
         LocalTime end;
         do {
@@ -60,6 +61,7 @@ public class RollingRandomAppenderDirectWriteAndSwitchDirectorTest {
         File nextLogFile = new File(String.format("%s/%s/%d/%d.log", DIR, uuid, end.getSecond(), end.getSecond()));
         assertTrue(nextLogFile.exists(), "nextLogFile not created");
         String subdir = String.format("%s/%s", DIR, uuid);
+        Thread.sleep(1000);
         assertTrue(cleanPath(Paths.get(subdir)), "clean sub director failed");
     }
 
