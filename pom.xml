@@ -297,7 +297,7 @@
     <jctoolsVersion>3.3.0</jctoolsVersion>
     <junitVersion>4.13.2</junitVersion>
     <junit5Version>5.9.0</junit5Version>
-    <junitPioneerVersion>1.6.2</junitPioneerVersion>
+    <junitPioneerVersion>1.7.1</junitPioneerVersion>
     <mockitoVersion>4.4.0</mockitoVersion>
     <xmlunitVersion>2.9.0</xmlunitVersion>
     <!-- Java EE 8 artifacts -->
